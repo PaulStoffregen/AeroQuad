@@ -35,6 +35,17 @@
   #define MOTORPIN5    8
   #define MOTORPIN6    11
   #define MOTORPIN7    12
+  #define EIGHT_HARDWARE_PWM
+#elif defined(__MK20DX128__) || defined(__MK20DX256__) // Teensy 3.0 & 3.1
+  #define MOTORPIN0    5
+  #define MOTORPIN1    6
+  #define MOTORPIN2    9
+  #define MOTORPIN3    10
+  #define MOTORPIN4    20
+  #define MOTORPIN5    21
+  #define MOTORPIN6    22
+  #define MOTORPIN7    23
+  #define EIGHT_HARDWARE_PWM
 #else
   #define MOTORPIN0    3
   #define MOTORPIN1    9
@@ -86,7 +97,7 @@ ISR(TIMER0_COMPB_vect) { //the same with digital PIN 6 and OCR0B counter
 
 void initializeMotors(NB_Motors numbers) {
   numberOfMotors = numbers;
-  #if defined (__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #ifdef EIGHT_HARDWARE_PWM
 	  
   #else
     pinMode(MOTORPIN0, OUTPUT);
@@ -109,7 +120,7 @@ void writeMotors() {
   analogWrite(MOTORPIN2, motorCommand[MOTOR3] / 8);
   analogWrite(MOTORPIN3, motorCommand[MOTOR4] / 8); 
   if (numberOfMotors == SIX_Motors) {
-	#if defined (__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+	#ifdef EIGHT_HARDWARE_PWM
 	  analogWrite(MOTORPIN4, motorCommand[MOTOR5] / 8);
       analogWrite(MOTORPIN5, motorCommand[MOTOR6] / 8);
 	#else
@@ -119,7 +130,7 @@ void writeMotors() {
       atomicPWM_PIN6_lowState = 255-atomicPWM_PIN6_highState;
     #endif
   }
-  #if defined (__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #ifdef EIGHT_HARDWARE_PWM
     else if (numberOfMotors == EIGHT_Motors) {
       analogWrite(MOTORPIN4, motorCommand[MOTOR5] / 8);
       analogWrite(MOTORPIN5, motorCommand[MOTOR6] / 8);
@@ -135,7 +146,7 @@ void commandAllMotors(int command) {
   analogWrite(MOTORPIN2, command / 8);
   analogWrite(MOTORPIN3, command / 8);
   if (numberOfMotors == SIX_Motors) {
-	#if defined (__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+	#ifdef EIGHT_HARDWARE_PWM
 	  analogWrite(MOTORPIN4, command / 8);
       analogWrite(MOTORPIN5, command / 8);
 	#else
@@ -146,7 +157,7 @@ void commandAllMotors(int command) {
     #endif
 	  
   }
-  #if defined (__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #ifdef EIGHT_HARDWARE_PWM
     else if (numberOfMotors == EIGHT_Motors) {
       analogWrite(MOTORPIN4, command / 8);
       analogWrite(MOTORPIN5, command / 8);
